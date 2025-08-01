@@ -1,0 +1,92 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+.history/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# Others
+*.cache
+*.db
+*.bak
+*.tmp
+
+# User-specific files
+*.swp
+*.swo
+
+# Python (if any scripts)
+__pycache__/
+*.pyc
+
+# MacOS
+.DS_Store
+
+# Node.js (if any frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+
+# Local tools
+.localhistory/
+*.local
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# Publish
+publish/
+out/
+dist/
