@@ -10,7 +10,6 @@ import os
 import logging
 import shutil
 import tempfile
-import string
 from utils.threading import run_in_thread
 
 logger = logging.getLogger(__name__)
@@ -82,7 +81,7 @@ class FormatConverter:
                     callback_error(msg_error)
                     return
                     
-                cmd = f'convert "{letra_unidad}" /FS:NTFS /X'
+                cmd = f'convert {letra_unidad} /FS:NTFS /X'
                 timeout = 300
                 logger.info(f"Ejecutando comando NTFS: {cmd}")
                 self._ejecutar_comando(cmd, timeout, letra_unidad, callback_exito, callback_error)
@@ -121,6 +120,7 @@ class FormatConverter:
 
     def _ejecutar_comando(self, comando, timeout, letra_unidad, callback_exito, callback_error):
         """Ejecuta un comando de conversión con manejo de errores"""
+        ruta_bat = None
         try:
             # Crear archivo batch en directorio temporal
             with tempfile.NamedTemporaryFile(suffix='.bat', delete=False) as bat_file:
@@ -166,11 +166,11 @@ class FormatConverter:
             callback_error(f"Error ejecutando comando: {str(e)}")
         finally:
             # Limpieza segura
-            try:
-                if os.path.exists(ruta_bat):
+            if ruta_bat and os.path.exists(ruta_bat):
+                try:
                     os.remove(ruta_bat)
-            except Exception as e:
-                logger.warning(f"No se pudo eliminar archivo temporal: {str(e)}")
+                except Exception as e:
+                    logger.warning(f"No se pudo eliminar archivo temporal: {str(e)}")
 
     def _convertir_con_copia(self, letra_unidad, nuevo_fs, callback_exito, callback_error):
         """Conversión segura usando copia temporal de datos"""
@@ -186,6 +186,10 @@ class FormatConverter:
                 return
 
             unidad_sistema = os.environ.get('SystemDrive', 'C:')
+            # CORRECCIÓN: Asegurar que la unidad termine con \
+            if not unidad_sistema.endswith('\\'):
+                unidad_sistema += '\\'
+                
             espacio_libre = psutil.disk_usage(unidad_sistema).free
             
             if espacio_libre < espacio_usado * 1.2:
@@ -197,9 +201,22 @@ class FormatConverter:
                 return
                 
             # Paso 2: Crear directorio temporal
-            self.backup_dir = tempfile.mkdtemp(prefix=f"USB_BACKUP_{letra_unidad.replace(':', '')}_", 
-                                             dir=os.path.join(unidad_sistema, "Temp"))
-            logger.info(f"Directorio temporal creado: {self.backup_dir}")
+            # CORRECCIÓN: Crear directorio base si no existe
+            temp_base = os.path.join(unidad_sistema, "Temp")
+            if not os.path.exists(temp_base):
+                try:
+                    os.makedirs(temp_base)
+                    logger.info(f"Directorio temporal creado: {temp_base}")
+                except Exception as e:
+                    logger.error(f"No se pudo crear directorio temporal: {str(e)}")
+                    callback_error(f"Error creando directorio temporal: {str(e)}")
+                    return
+                    
+            self.backup_dir = tempfile.mkdtemp(
+                prefix=f"USB_BACKUP_{letra_unidad.replace(':', '')}_", 
+                dir=temp_base
+            )
+            logger.info(f"Directorio backup creado: {self.backup_dir}")
             
             # Paso 3: Copiar datos
             if not self.copiar_datos(letra_unidad, self.backup_dir, callback_error):
@@ -260,6 +277,8 @@ class FormatConverter:
 
     def copiar_datos(self, origen, destino, callback_error):
         """Copia datos usando robocopy con reintentos"""
+        # Usar ruta raíz de la unidad (agregar \ al final)
+        origen = os.path.join(origen, '')
         comando = f'robocopy "{origen}" "{destino}" /E /COPY:DAT /DCOPY:T /R:3 /W:5 /NP /NFL /NDL /NJH /NJS'
         logger.info(f"Copiando datos: {comando}")
         
@@ -274,8 +293,9 @@ class FormatConverter:
                     timeout=3600  # 1 hora máximo
                 )
                 
-                if proceso.returncode < 8:  # Códigos de éxito de robocopy
-                    logger.info(f"Copia exitosa (intento {intento+1})")
+                # Robocopy retorna 0-7 como éxito, 8+ como error
+                if proceso.returncode <= 7:
+                    logger.info(f"Copia exitosa (intento {intento+1}), código: {proceso.returncode}")
                     return True
                     
                 logger.warning(f"Intento {intento+1} fallido: {proceso.stderr or proceso.stdout}")
@@ -291,12 +311,19 @@ class FormatConverter:
 
     def formatear_unidad(self, letra_unidad, fs, callback_error):
         """Formatea la unidad usando el comando de Windows"""
-        comando = f'format "{letra_unidad}" /FS:{fs} /Q /V:USB'
+        # Quitar los dos puntos para el nombre del volumen
+        nombre_volumen = f"USB-{letra_unidad.strip(':')}"
+        
+        # Construir comando correctamente
+        comando = f'format {letra_unidad} /FS:{fs} /Q /V:{nombre_volumen}'
         logger.info(f"Formateando unidad: {comando}")
         
         try:
+            # Crear comando con respuesta automática Y
+            full_cmd = f'echo Y| {comando}'
+            
             proceso = subprocess.run(
-                f'cmd /c echo Y|{comando}',
+                full_cmd,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -308,7 +335,7 @@ class FormatConverter:
                 logger.info("Formateo exitoso")
                 return True
                 
-            msg_error = f"Error en formateo: {proceso.stderr or proceso.stdout}"
+            msg_error = f"Error en formateo (código {proceso.returncode}): {proceso.stderr or proceso.stdout}"
             logger.error(msg_error)
             callback_error(msg_error)
             return False
@@ -318,9 +345,15 @@ class FormatConverter:
             logger.error(msg_error)
             callback_error(msg_error)
             return False
+        except Exception as e:
+            logger.exception(f"Error inesperado al formatear: {str(e)}")
+            callback_error(f"Error inesperado al formatear: {str(e)}")
+            return False
 
     def restaurar_datos(self, origen, destino, callback_error):
         """Restaura datos usando robocopy con reintentos"""
+        # Usar ruta raíz para destino (agregar \ al final)
+        destino = os.path.join(destino, '')
         comando = f'robocopy "{origen}" "{destino}" /E /COPY:DAT /DCOPY:T /R:3 /W:5 /NP /NFL /NDL /NJH /NJS'
         logger.info(f"Restaurando datos: {comando}")
         
@@ -335,8 +368,8 @@ class FormatConverter:
                     timeout=3600  # 1 hora máximo
                 )
                 
-                if proceso.returncode < 8:  # Códigos de éxito de robocopy
-                    logger.info(f"Restauración exitosa (intento {intento+1})")
+                if proceso.returncode <= 7:
+                    logger.info(f"Restauración exitosa (intento {intento+1}), código: {proceso.returncode}")
                     return True
                     
                 logger.warning(f"Intento {intento+1} fallido: {proceso.stderr or proceso.stdout}")
@@ -363,16 +396,14 @@ class FormatConverter:
 
     def esperar_unidad_lista(self, letra_unidad, max_intentos=10):
         """Espera a que la unidad esté disponible después de formatear"""
-        for _ in range(max_intentos):
+        for i in range(max_intentos):
             if os.path.exists(letra_unidad):
                 try:
-                    # Intentar acceder a la unidad
-                    with open(os.path.join(letra_unidad, 'temp_test.tmp'), 'w') as f:
-                        f.write("test")
-                    os.remove(os.path.join(letra_unidad, 'temp_test.tmp'))
+                    # Verificar si podemos listar el contenido
+                    os.listdir(letra_unidad)
                     return True
-                except:
-                    pass
+                except OSError:
+                    logger.debug(f"Unidad {letra_unidad} aún no lista (intento {i+1})")
             time.sleep(1)
         return False
 
@@ -401,17 +432,15 @@ class FormatConverter:
         if not letra_unidad.endswith(':'):
             letra_unidad += ':'
         
-        for particion in psutil.disk_partitions():
-            if particion.device.upper().startswith(letra_unidad):
-                for proc in psutil.process_iter():
-                    try:
-                        archivos = proc.open_files()
-                        for archivo in archivos:
-                            if archivo.path.upper().startswith(letra_unidad):
-                                logger.warning(f"Proceso usando unidad: {proc.pid} {proc.name()}")
-                                return True
-                    except (psutil.AccessDenied, psutil.NoSuchProcess):
-                        continue
+        for proc in psutil.process_iter():
+            try:
+                archivos = proc.open_files()
+                for archivo in archivos:
+                    if archivo.path.upper().startswith(letra_unidad):
+                        logger.warning(f"Proceso usando unidad: {proc.pid} {proc.name()}")
+                        return True
+            except (psutil.AccessDenied, psutil.NoSuchProcess):
+                continue
         return False
 
     def terminar_procesos_unidad(self, letra_unidad):
@@ -429,16 +458,11 @@ class FormatConverter:
                     if archivo.path.upper().startswith(letra_unidad):
                         logger.warning(f"Terminando proceso {proc.pid} usando {letra_unidad}")
                         try:
-                            handle = win32api.OpenProcess(
-                                win32con.PROCESS_TERMINATE, 
-                                False, 
-                                proc.pid
-                            )
-                            win32api.TerminateProcess(handle, 0)
-                            win32api.CloseHandle(handle)
+                            proc.terminate()
+                            proc.wait(timeout=2)
                             procesos_terminados = True
-                        except Exception as e:
-                            logger.error(f"No se pudo terminar proceso {proc.pid}: {str(e)}")
+                        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired):
+                            continue
                         break
             except (psutil.AccessDenied, psutil.NoSuchProcess):
                 continue
@@ -508,7 +532,14 @@ class FormatConverter:
 # Función para obtener tipo de sistema de archivos
 def obtener_tipo_fs(letra_unidad):
     try:
+        # Asegurar formato correcto X:
+        if len(letra_unidad) == 1:
+            letra_unidad += ':'
+        elif len(letra_unidad) == 2 and letra_unidad[1] != ':':
+            letra_unidad = letra_unidad[0] + ':'
+            
         info_volumen = win32api.GetVolumeInformation(letra_unidad)
         return info_volumen[4]  # Tipo de sistema de archivos
-    except Exception:
+    except Exception as e:
+        logger.error(f"Error obteniendo sistema de archivos: {str(e)}")
         return None
