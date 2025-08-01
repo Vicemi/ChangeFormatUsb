@@ -1,6 +1,7 @@
 # Visual Studio
 .vs/
 .venv/
+.build/
 *.user
 *.suo
 *.userosscache
