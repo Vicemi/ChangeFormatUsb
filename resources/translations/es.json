@@ -1,37 +1,58 @@
 {
     "LANGUAGE_NAME": "Español",
 
-    "DISCONNECTED_DEVICES": "Sin dispositivos USB",
-    "CONNECTED_DEVICES":    "Dispositivos USB conectados",
+    "SECTION_DEVICES":    "DISPOSITIVOS",
+    "NO_DEVICES":         "Sin dispositivos USB",
+    "REFRESH_TOOLTIP":    "Actualizar lista",
 
-    "DRIVE_LABEL":        "Unidad: —",
-    "FS_LABEL":           "Sistema de archivos: —",
-    "SIZE_LABEL":         "Tamaño: —",
-    "FREE_LABEL":         "Espacio libre: —",
+    "EMPTY_TITLE":        "Selecciona un dispositivo USB",
+    "EMPTY_SUBTITLE":     "Los dispositivos conectados aparecen en el panel izquierdo.",
 
-    "DRIVE_LABEL_FORMAT": "{letter} ({label})",
-    "FS_LABEL_FORMAT":    "{fs}",
-    "SIZE_LABEL_FORMAT":  "{size:.1f} GB",
-    "FREE_LABEL_FORMAT":  "{free:.1f} GB",
+    "CARD_TOTAL":         "Total",
+    "CARD_FREE":          "Libre",
+    "CARD_USED":          "Usado",
 
-    "NEW_FORMAT":    "Formato de destino:",
-    "CONVERT_BTN":   "Convertir Formato",
-    "CANCEL_BTN":    "Cancelar",
+    "SECTION_CONVERT":    "CONVERTIR FORMATO",
+    "FORMAT_LABEL":       "Formato de destino:",
+    "CONVERT_BTN":        "  Convertir Formato",
+    "CANCEL_BTN":         "Cancelar",
 
-    "ADMIN_REQUIRED_TITLE": "Permisos requeridos",
-    "ADMIN_REQUIRED_MSG":   "Se requieren permisos de administrador para operar correctamente.\nEjecuta el programa como administrador.",
+    "STATUS_PREPARING":   "Preparando...",
+    "STATUS_CANCELLING":  "Cancelando operacion...",
+    "STATUS_DONE":        "Conversion completada",
+    "STATUS_ERROR":       "Error durante la conversion",
 
-    "CONFIRM_TITLE": "Confirmar conversion",
-    "CONFIRM_MSG":   "Convertir {drive} a {format}?\n\nSe intentara preservar todos tus datos.\nSe recomienda tener un respaldo antes de continuar.",
+    "MENU_LANGUAGE":      "Idioma",
+    "MENU_HELP":          "Ayuda",
+    "MENU_ABOUT":         "Acerca de",
 
-    "SUCCESS_TITLE": "Conversion exitosa",
-    "SUCCESS_MSG":   "La unidad {drive} fue convertida correctamente.",
+    "ADMIN_REQUIRED_TITLE": "Permisos de administrador",
+    "ADMIN_REQUIRED_MSG":   "<b>Se requieren permisos de administrador.</b><br><br>Algunas operaciones pueden fallar sin privilegios elevados.<br>Ejecuta el programa como administrador para mejores resultados.",
 
-    "ERROR_TITLE": "Error",
-    "ERROR_MSG":   "Se produjo un error:\n{error}",
+    "CONFIRM_TITLE":      "Confirmar conversion",
+    "CONFIRM_MSG":        "<b>Convertir {drive} a {format}</b><br><br>Formato actual: <b>{current}</b><br>Formato nuevo:  <b>{format}</b><br><br>Se intentara preservar todos los datos de la unidad.<br><span style='color:#d29922;font-size:12px;'>Se recomienda tener un respaldo antes de continuar.</span>",
 
-    "LANGUAGE_MENU":     "Idioma",
-    "DEVICES_GROUP":     "Dispositivos",
-    "DEVICE_INFO_GROUP": "Informacion del dispositivo",
-    "CONVERT_GROUP":     "Convertir formato"
+    "SAME_FORMAT_TITLE":  "Sin cambios",
+    "SAME_FORMAT_MSG":    "La unidad {drive} ya usa el formato {format}.\nSelecciona un formato diferente.",
+
+    "SUCCESS_TITLE":      "Conversion exitosa",
+    "SUCCESS_MSG":        "La unidad <b>{drive}</b> fue convertida correctamente.",
+
+    "ERROR_TITLE":        "Error en la conversion",
+    "ERROR_MSG":          "<b>Se produjo un error:</b><br><br>{error}",
+
+    "CLOSE_TITLE":        "Conversion en progreso",
+    "CLOSE_MSG":          "<b>Hay una conversion en curso.</b><br><br>Si sales ahora la unidad podria quedar en un estado inconsistente.<br>¿Seguro que deseas salir?",
+
+    "ABOUT_TAB_INFO":     "Informacion",
+    "ABOUT_TAB_CREDITS":  "Creditos",
+    "ABOUT_DONATE":       "Donar",
+    "ABOUT_GITHUB":       "GitHub",
+    "ABOUT_CLOSE":        "Cerrar",
+    "ABOUT_SUBTITLE":     "Herramienta para convertir el formato de unidades USB sin perder datos.",
+    "ABOUT_AUTHOR_LBL":   "Autor",
+    "ABOUT_VERSION_LBL":  "Version",
+    "ABOUT_LICENSE_LBL":  "Licencia",
+    "ABOUT_REPO_LBL":     "Repositorio",
+    "ABOUT_CREDITS_BODY": "<p style='color:#8b949e;'>Desarrollado con:</p><ul style='color:#e6edf3;margin:0;padding-left:18px;'><li>Python 3.12</li><li>PyQt5 — interfaz grafica</li><li>PyInstaller — distribución ejecutable</li><li>psutil, wmi, pywin32 — integracion Windows</li></ul><p style='color:#8b949e;margin-top:12px;'>Iconos SVG de <a href='https://www.svgrepo.com' style='color:#388bfd;'>svgrepo.com</a></p>"
 }

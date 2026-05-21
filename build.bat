@@ -8,76 +8,64 @@ echo   ChangeFormatUSB  Build Script
 echo  ============================================
 echo.
 
-:: Detectar PyInstaller: priorizar el del venv si existe
+:: Detect PyInstaller: prefer venv if it exists
 set PYINST=pyinstaller
 if exist ".venv\Scripts\pyinstaller.exe" set PYINST=.venv\Scripts\pyinstaller.exe
 
-:: Detectar pip: priorizar el del venv si existe
+:: Detect pip: prefer venv if it exists
 set PIP=pip
 if exist ".venv\Scripts\pip.exe" set PIP=.venv\Scripts\pip.exe
 
-:: ── 1. Dependencias ───────────────────────────────────────────────────────
-echo  [1/3]  Instalando dependencias...
+:: ── 1. Dependencies ───────────────────────────────────────────────────────────
+echo  [1/3]  Installing dependencies...
 %PIP% install -r requirements.txt --quiet
 if %errorlevel% neq 0 (
     echo.
-    echo  ERROR: Fallo la instalacion de dependencias.
-    echo  Asegurate de tener Python 3.8+ y pip configurados.
+    echo  ERROR: Dependency installation failed.
+    echo  Make sure Python 3.8+ and pip are configured.
     echo.
     pause & exit /b 1
 )
 echo         OK
 
-:: ── 2. Compilar ejecutable ────────────────────────────────────────────────
-echo  [2/3]  Compilando ejecutable con PyInstaller...
+:: ── 2. Build main application ─────────────────────────────────────────────────
+echo  [2/3]  Building main application...
 %PYINST% changeformatusb.spec --clean --noconfirm
 if %errorlevel% neq 0 (
     echo.
-    echo  ERROR: PyInstaller fallo. Revisa los mensajes anteriores.
+    echo  ERROR: PyInstaller failed. Check the output above.
     echo.
     pause & exit /b 1
 )
 echo         OK: dist\ChangeFormatUSB.exe
 
-:: ── 3. Crear instalador (requiere Inno Setup 6) ───────────────────────────
-echo  [3/3]  Creando instalador...
+:: ── 3. Build self-contained installer ────────────────────────────────────────
+echo  [3/3]  Building installer...
 
-set ISCC=
-for %%P in (
-    "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-    "C:\Program Files\Inno Setup 6\ISCC.exe"
-) do (
-    if exist %%P (
-        set ISCC=%%P
-        goto :found_inno
-    )
+if not exist "dist\ChangeFormatUSB.exe" (
+    echo.
+    echo  ERROR: dist\ChangeFormatUSB.exe not found.
+    echo  The main application must be built before the installer.
+    echo.
+    pause & exit /b 1
 )
 
-:not_found_inno
-echo         AVISO: Inno Setup 6 no encontrado.
-echo         Descargalo desde https://jrsoftware.org/isinfo.php
-echo         Luego ejecuta: ISCC.exe installer.iss
-goto :done
-
-:found_inno
-if not exist "dist\installer" mkdir "dist\installer"
-%ISCC% installer.iss
+%PYINST% setup\installer.spec --clean --noconfirm
 if %errorlevel% neq 0 (
     echo.
-    echo  AVISO: El instalador no se pudo crear.
-    goto :done
+    echo  ERROR: Installer build failed. Check the output above.
+    echo.
+    pause & exit /b 1
 )
-echo         OK: dist\installer\ChangeFormatUSB-Setup-2.0.exe
+echo         OK: dist\ChangeFormatUSB-Setup-2.0.exe
 
 :done
 echo.
 echo  ============================================
-echo   Build finalizado
+echo   Build complete
 echo  ============================================
 echo.
-echo   Ejecutable:  dist\ChangeFormatUSB.exe
-if exist "dist\installer\ChangeFormatUSB-Setup-2.0.exe" (
-    echo   Instalador:  dist\installer\ChangeFormatUSB-Setup-2.0.exe
-)
+echo   Application : dist\ChangeFormatUSB.exe
+echo   Installer   : dist\ChangeFormatUSB-Setup-2.0.exe
 echo.
 pause
