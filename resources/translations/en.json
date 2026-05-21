@@ -1,28 +1,37 @@
 {
     "LANGUAGE_NAME": "English",
-    "DISCONNECTED_DEVICES": "USB devices connected:",
-    "CONNECTED_DEVICES": "USB devices connected:",
-    "DEVICE_INFO": "Device information:",
-    "DRIVE_LABEL": "Drive: -",
-    "FS_LABEL": "Filesystem: -",
-    "SIZE_LABEL": "Size: -",
-    "FREE_LABEL": "Free space: -",
-    "DRIVE_LABEL_FORMAT": "Drive: {letter} ({label})",
-    "FS_LABEL_FORMAT": "Filesystem: {fs}",
-    "SIZE_LABEL_FORMAT": "Size: {size:.1f} GB",
-    "FREE_LABEL_FORMAT": "Free space: {free:.1f} GB",
-    "NEW_FORMAT": "New format:",
-    "CONVERT_BTN": "Convert Format",
+
+    "DISCONNECTED_DEVICES": "No USB devices",
+    "CONNECTED_DEVICES":    "USB devices connected",
+
+    "DRIVE_LABEL":        "Drive: —",
+    "FS_LABEL":           "Filesystem: —",
+    "SIZE_LABEL":         "Size: —",
+    "FREE_LABEL":         "Free space: —",
+
+    "DRIVE_LABEL_FORMAT": "{letter} ({label})",
+    "FS_LABEL_FORMAT":    "{fs}",
+    "SIZE_LABEL_FORMAT":  "{size:.1f} GB",
+    "FREE_LABEL_FORMAT":  "{free:.1f} GB",
+
+    "NEW_FORMAT":   "Target format:",
+    "CONVERT_BTN":  "Convert Format",
+    "CANCEL_BTN":   "Cancel",
+
     "ADMIN_REQUIRED_TITLE": "Permissions Required",
-    "ADMIN_REQUIRED_MSG": "This application requires administrator permissions to function properly.\n\nPlease run the program as administrator.",
+    "ADMIN_REQUIRED_MSG":   "Administrator permissions are required to operate correctly.\nPlease run the program as administrator.",
+
     "CONFIRM_TITLE": "Confirm Conversion",
-    "CONFIRM_MSG": "Are you sure you want to convert drive {drive} to {format}?\n\nWARNING: This should not delete your data, but we still recommend backing up your data.",
-    "SUCCESS_TITLE": "Success",
-    "SUCCESS_MSG": "Drive {drive} has been successfully converted.",
+    "CONFIRM_MSG":   "Convert {drive} to {format}?\n\nYour data will be preserved.\nA backup is still recommended before proceeding.",
+
+    "SUCCESS_TITLE": "Conversion Successful",
+    "SUCCESS_MSG":   "Drive {drive} was converted successfully.",
+
     "ERROR_TITLE": "Error",
-    "ERROR_MSG": "An error occurred during conversion:\n{error}",
-    "LANGUAGE_MENU": "Language",
-    "DEVICES_GROUP": "USB Devices",
+    "ERROR_MSG":   "An error occurred:\n{error}",
+
+    "LANGUAGE_MENU":     "Language",
+    "DEVICES_GROUP":     "Devices",
     "DEVICE_INFO_GROUP": "Device Information",
-    "CONVERT_GROUP": "Convert Format"
+    "CONVERT_GROUP":     "Convert Format"
 }

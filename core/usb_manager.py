@@ -1,33 +1,50 @@
-import wmi
+import logging
 import psutil
+
+logger = logging.getLogger(__name__)
+
 
 class USBManager:
     def __init__(self):
-        self.cached_devices = []
-        
+        self._cache = []
+
     def get_usb_devices(self):
-        """Obtiene dispositivos USB con información detallada usando WMI y psutil"""
+        """
+        Return a list of removable USB drives with detailed info.
+        Falls back to cached data if WMI is unavailable.
+        """
         try:
-            usb_drives = []
+            import wmi
             c = wmi.WMI()
-            for drive in c.Win32_LogicalDisk(DriveType=2):
+            devices = []
+
+            for disk in c.Win32_LogicalDisk(DriveType=2):  # DriveType 2 = Removable
                 try:
-                    # Obtener información adicional con psutil
-                    usage = psutil.disk_usage(drive.DeviceID)
-                    
-                    device_info = {
-                        'letter': drive.DeviceID,
-                        'filesystem': drive.FileSystem or "Desconocido",
-                        'size': drive.Size or usage.total,
-                        'free': drive.FreeSpace or usage.free,
-                        'label': drive.VolumeName or "Sin etiqueta"
-                    }
-                    usb_drives.append(device_info)
+                    letter = disk.DeviceID  # e.g. "E:"
+                    drive_path = letter + "\\"
+
+                    try:
+                        usage = psutil.disk_usage(drive_path)
+                        total = usage.total
+                        free = usage.free
+                    except Exception:
+                        total = int(disk.Size or 0)
+                        free = int(disk.FreeSpace or 0)
+
+                    devices.append({
+                        "letter":     letter,
+                        "filesystem": disk.FileSystem or "Desconocido",
+                        "size":       total,
+                        "free":       free,
+                        "label":      disk.VolumeName or "Unidad USB",
+                    })
                 except Exception as e:
-                    print(f"Error procesando dispositivo: {e}")
+                    logger.warning("Error processing device %s: %s", disk.DeviceID, e)
                     continue
-            self.cached_devices = usb_drives
-            return usb_drives
+
+            self._cache = devices
+            return devices
+
         except Exception as e:
-            print(f"Error obteniendo dispositivos USB: {e}")
-            return self.cached_devices  # Devuelve caché en caso de error
+            logger.error("WMI unavailable (%s) — returning cached devices", e)
+            return self._cache
