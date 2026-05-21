@@ -1,28 +1,58 @@
 {
     "LANGUAGE_NAME": "English",
-    "DISCONNECTED_DEVICES": "USB devices connected:",
-    "CONNECTED_DEVICES": "USB devices connected:",
-    "DEVICE_INFO": "Device information:",
-    "DRIVE_LABEL": "Drive: -",
-    "FS_LABEL": "Filesystem: -",
-    "SIZE_LABEL": "Size: -",
-    "FREE_LABEL": "Free space: -",
-    "DRIVE_LABEL_FORMAT": "Drive: {letter} ({label})",
-    "FS_LABEL_FORMAT": "Filesystem: {fs}",
-    "SIZE_LABEL_FORMAT": "Size: {size:.1f} GB",
-    "FREE_LABEL_FORMAT": "Free space: {free:.1f} GB",
-    "NEW_FORMAT": "New format:",
-    "CONVERT_BTN": "Convert Format",
-    "ADMIN_REQUIRED_TITLE": "Permissions Required",
-    "ADMIN_REQUIRED_MSG": "This application requires administrator permissions to function properly.\n\nPlease run the program as administrator.",
-    "CONFIRM_TITLE": "Confirm Conversion",
-    "CONFIRM_MSG": "Are you sure you want to convert drive {drive} to {format}?\n\nWARNING: This should not delete your data, but we still recommend backing up your data.",
-    "SUCCESS_TITLE": "Success",
-    "SUCCESS_MSG": "Drive {drive} has been successfully converted.",
-    "ERROR_TITLE": "Error",
-    "ERROR_MSG": "An error occurred during conversion:\n{error}",
-    "LANGUAGE_MENU": "Language",
-    "DEVICES_GROUP": "USB Devices",
-    "DEVICE_INFO_GROUP": "Device Information",
-    "CONVERT_GROUP": "Convert Format"
+
+    "SECTION_DEVICES":    "DEVICES",
+    "NO_DEVICES":         "No USB devices",
+    "REFRESH_TOOLTIP":    "Refresh list",
+
+    "EMPTY_TITLE":        "Select a USB device",
+    "EMPTY_SUBTITLE":     "Connected devices appear in the left panel.",
+
+    "CARD_TOTAL":         "Total",
+    "CARD_FREE":          "Free",
+    "CARD_USED":          "Used",
+
+    "SECTION_CONVERT":    "CONVERT FORMAT",
+    "FORMAT_LABEL":       "Target format:",
+    "CONVERT_BTN":        "  Convert Format",
+    "CANCEL_BTN":         "Cancel",
+
+    "STATUS_PREPARING":   "Preparing...",
+    "STATUS_CANCELLING":  "Cancelling operation...",
+    "STATUS_DONE":        "Conversion completed",
+    "STATUS_ERROR":       "Error during conversion",
+
+    "MENU_LANGUAGE":      "Language",
+    "MENU_HELP":          "Help",
+    "MENU_ABOUT":         "About",
+
+    "ADMIN_REQUIRED_TITLE": "Administrator permissions",
+    "ADMIN_REQUIRED_MSG":   "<b>Administrator permissions are required.</b><br><br>Some operations may fail without elevated privileges.<br>Run the program as administrator for best results.",
+
+    "CONFIRM_TITLE":      "Confirm conversion",
+    "CONFIRM_MSG":        "<b>Convert {drive} to {format}</b><br><br>Current format: <b>{current}</b><br>New format: <b>{format}</b><br><br>Your data will be preserved.<br><span style='color:#d29922;font-size:12px;'>A backup is recommended before proceeding.</span>",
+
+    "SAME_FORMAT_TITLE":  "No changes",
+    "SAME_FORMAT_MSG":    "Drive {drive} already uses {format} format.\nSelect a different format.",
+
+    "SUCCESS_TITLE":      "Conversion successful",
+    "SUCCESS_MSG":        "Drive <b>{drive}</b> was converted successfully.",
+
+    "ERROR_TITLE":        "Conversion error",
+    "ERROR_MSG":          "<b>An error occurred:</b><br><br>{error}",
+
+    "CLOSE_TITLE":        "Conversion in progress",
+    "CLOSE_MSG":          "<b>A conversion is in progress.</b><br><br>Exiting now may leave the drive in an inconsistent state.<br>Are you sure you want to exit?",
+
+    "ABOUT_TAB_INFO":     "Information",
+    "ABOUT_TAB_CREDITS":  "Credits",
+    "ABOUT_DONATE":       "Donate",
+    "ABOUT_GITHUB":       "GitHub",
+    "ABOUT_CLOSE":        "Close",
+    "ABOUT_SUBTITLE":     "Tool to convert USB drive formats without data loss.",
+    "ABOUT_AUTHOR_LBL":   "Author",
+    "ABOUT_VERSION_LBL":  "Version",
+    "ABOUT_LICENSE_LBL":  "License",
+    "ABOUT_REPO_LBL":     "Repository",
+    "ABOUT_CREDITS_BODY": "<p style='color:#8b949e;'>Built with:</p><ul style='color:#e6edf3;margin:0;padding-left:18px;'><li>Python 3.12</li><li>PyQt5 — graphical interface</li><li>PyInstaller — executable distribution</li><li>psutil, wmi, pywin32 — Windows integration</li></ul><p style='color:#8b949e;margin-top:12px;'>SVG icons from <a href='https://www.svgrepo.com' style='color:#388bfd;'>svgrepo.com</a></p>"
 }

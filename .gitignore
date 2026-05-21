@@ -92,3 +92,8 @@ coverage/
 publish/
 out/
 dist/
+
+# PyInstaller
+build/
+*.spec.bak
+logs/
