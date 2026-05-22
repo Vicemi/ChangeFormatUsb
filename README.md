@@ -3,7 +3,7 @@
 **ChangeFormatUsb** es una aplicación para Windows que permite cambiar el formato de tus unidades USB sin borrar los datos existentes. Su objetivo es facilitar la conversión de sistemas de archivos de forma segura, rápida y sencilla.
 
 <div align="center">
-    <img src="docs/screen1.png" alt="Pantalla principal" width="500"/>
+    <img src="docs/screen2.png" alt="Pantalla principal" width="500"/>
 </div>
 
 ---
